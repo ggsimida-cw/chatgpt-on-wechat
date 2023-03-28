@@ -2,6 +2,8 @@
 
 """
 wechaty channel
+通过wechaty编写的微信聊天渠道
+
 Python Wechaty - https://github.com/wechaty/python-wechaty
 """
 import io

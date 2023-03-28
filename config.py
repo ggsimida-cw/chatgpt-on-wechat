@@ -59,7 +59,7 @@ available_setting ={
     "chat_stop_time": "24:00", # 服务结束时间
 
     # itchat的配置
-    "hot_reload": False, # 是否开启热重载
+    "hot_reload": False, # 是否开启热重载，开启：不用重复扫码登录微信
 
     # wechaty的配置
     "wechaty_puppet_service_token": "", # wechaty的token
@@ -71,12 +71,26 @@ available_setting ={
 }
 
 class Config(dict):
+    """
+    继承字典类
+    """
     def __getitem__(self, key):
+        """
+        使用对象[key] 将自动调用该方法。
+        :param key:
+        :return:
+        """
         if key not in available_setting:
             raise Exception("key {} not in available_setting".format(key))
         return super().__getitem__(key)
 
     def __setitem__(self, key, value):
+        """
+        每当属性被赋值的时候都会调用该方法
+        :param key:
+        :param value:
+        :return:
+        """
         if key not in available_setting:
             raise Exception("key {} not in available_setting".format(key))
         return super().__setitem__(key, value)
@@ -114,16 +128,17 @@ def load_config():
                 config[name] = eval(value)
             except:
                 config[name] = value
-
     logger.info("[INIT] load config: {}".format(config))
-
-
 
 def get_root():
     return os.path.dirname(os.path.abspath( __file__ ))
 
 
 def read_file(path):
+    """
+        读取配置文件
+        :return:
+        """
     with open(path, mode='r', encoding='utf-8') as f:
         return f.read()
 

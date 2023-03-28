@@ -1,4 +1,8 @@
+
+
 """
+聊天机器人的抽象类，向自定义的聊天机器人，可以继承此类
+
 Auto-replay chat robot abstract class
 """
 

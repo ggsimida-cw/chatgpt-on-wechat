@@ -1,6 +1,7 @@
 # encoding:utf-8
 
 """
+通过itchat编写的微信聊天渠道
 wechat channel
 """
 
@@ -59,7 +60,7 @@ class WechatChannel(Channel):
         # login by scan QRCode
         hotReload = conf().get('hot_reload', False)
         try:
-            itchat.auto_login(enableCmdQR=2, hotReload=hotReload)
+            itchat.auto_login(enableCmdQR=2, hotReload=hotReload) # 微信登录
         except Exception as e:
             if hotReload:
                 logger.error("Hot reload failed, try to login without hot reload")
@@ -68,12 +69,11 @@ class WechatChannel(Channel):
                 itchat.auto_login(enableCmdQR=2, hotReload=hotReload)
             else:
                 raise e
-        self.userName = itchat.instance.storageClass.userName
-        self.nickName = itchat.instance.storageClass.nickName
+        self.userName = itchat.instance.storageClass.userName # 获取用户id
+        self.nickName = itchat.instance.storageClass.nickName # 获取微信名
         logger.info("Wechat login success, username: {}, nickname: {}".format(self.userName, self.nickName))
         # start message listener
         itchat.run()
-
     # handle_* 系列函数处理收到的消息后构造Context，然后传入handle函数中处理Context和发送回复
     # Context包含了消息的所有信息，包括以下属性
     #   type 消息类型, 包括TEXT、VOICE、IMAGE_CREATE
@@ -85,6 +85,11 @@ class WechatChannel(Channel):
     #        msg: itchat的原始消息对象
 
     def handle_voice(self, msg):
+        """
+        处理语音信息
+        :param msg:
+        :return:
+        """
         if conf().get('speech_recognition') != True:
             return
         logger.debug("[WX]receive voice msg: " + msg['FileName'])
@@ -105,6 +110,11 @@ class WechatChannel(Channel):
 
     @time_checker
     def handle_text(self, msg):
+        """
+        处理文本信息
+        :param msg:
+        :return:
+        """
         logger.debug("[WX]receive text msg: " + json.dumps(msg, ensure_ascii=False))
         content = msg['Text']
         from_user_id = msg['FromUserName']
@@ -144,6 +154,11 @@ class WechatChannel(Channel):
 
     @time_checker
     def handle_group(self, msg):
+        """
+         处理群
+        :param msg:
+        :return:
+        """
         logger.debug("[WX]receive group msg: " + json.dumps(msg, ensure_ascii=False))
         group_name = msg['User'].get('NickName', None)
         group_id = msg['User'].get('UserName', None)
@@ -190,6 +205,11 @@ class WechatChannel(Channel):
             thread_pool.submit(self.handle, context).add_done_callback(thread_pool_callback)
 
     def handle_group_voice(self, msg):
+        """
+         处理群语音
+        :param msg:
+        :return:
+        """
         if conf().get('group_speech_recognition', False) != True:
             return
         logger.debug("[WX]receive voice for group msg: " + msg['FileName'])

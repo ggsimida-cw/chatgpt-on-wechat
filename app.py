@@ -9,16 +9,16 @@ from plugins import *
 def run():
     try:
         # load config
-        config.load_config()
+        config.load_config() # 加载配置文件
 
-        # create channel
+        # 创建微信通道
         channel_name='wx'
         channel = channel_factory.create_channel(channel_name)
         if channel_name=='wx':
             PluginManager().load_plugins()
 
         # startup channel
-        channel.startup()
+        channel.startup() #　启动
     except Exception as e:
         logger.error("App startup failed!")
         logger.exception(e)
