@@ -9,6 +9,9 @@ from .event import *
 from common.log import logger
 from config import conf
 
+"""
+插件管理
+"""
 
 @singleton
 class PluginManager:
@@ -19,6 +22,18 @@ class PluginManager:
         self.pconf = {}
 
     def register(self, name: str, desc: str, version: str, author: str, desire_priority: int = 0):
+
+        """
+        注册插件
+        :param name:
+        :param desc:
+        :param version:
+        :param author:
+        :param desire_priority:
+        :return:
+        """
+
+
         def wrapper(plugincls):
             plugincls.name = name
             plugincls.desc = desc
@@ -113,6 +128,10 @@ class PluginManager:
         return False
     
     def load_plugins(self):
+        """
+        加载插件
+        :return:
+        """
         self.load_config()
         self.scan_plugins()
         pconf = self.pconf

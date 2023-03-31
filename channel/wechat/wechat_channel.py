@@ -29,11 +29,13 @@ def thread_pool_callback(worker):
     if worker_exception:
         logger.exception("Worker return exception: {}".format(worker_exception))
 
+# 朋友聊天文本函数注册
 @itchat.msg_register(TEXT)
 def handler_single_msg(msg):
     WechatChannel().handle_text(msg)
     return None
 
+# 群消息文本函数注册，isGroupChat是否开启是群聊判定
 @itchat.msg_register(TEXT, isGroupChat=True)
 def handler_group_msg(msg):
     WechatChannel().handle_group(msg)
@@ -73,6 +75,7 @@ class WechatChannel(Channel):
         self.nickName = itchat.instance.storageClass.nickName # 获取微信名
         logger.info("Wechat login success, username: {}, nickname: {}".format(self.userName, self.nickName))
         # start message listener
+        # 开始监听消息
         itchat.run()
     # handle_* 系列函数处理收到的消息后构造Context，然后传入handle函数中处理Context和发送回复
     # Context包含了消息的所有信息，包括以下属性

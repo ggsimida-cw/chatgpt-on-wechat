@@ -14,7 +14,7 @@ def run():
         # 创建微信通道
         channel_name='wx'
         channel = channel_factory.create_channel(channel_name)
-        if channel_name=='wx':
+        if channel_name=='wx': # 目前仅支持ichat拥有插件
             PluginManager().load_plugins()
 
         # startup channel

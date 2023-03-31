@@ -31,7 +31,7 @@ def load_sync_itchat() -> Core:
         Core: the abstract interface of itchat
     """
     from .components import load_components
-    load_components(Core)
+    load_components(Core) # 加载组件
     return Core()
 
 

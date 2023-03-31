@@ -2,6 +2,9 @@ from common.expired_dict import ExpiredDict
 from common.log import logger
 from config import conf
 
+"""
+会话接口
+"""
 class Session(object):
     def __init__(self, session_id, system_prompt=None):
         self.session_id = session_id
@@ -13,14 +16,14 @@ class Session(object):
     # 重置会话
     def reset(self):
         raise NotImplementedError
-
+    # 设置机器人角色
     def set_system_prompt(self, system_prompt):
         self.system_prompt = system_prompt
         self.reset()
-
+    # 添加查询
     def add_query(self, query):
         raise NotImplementedError
-
+    # 添加回复
     def add_reply(self, reply):
         raise NotImplementedError
     
@@ -28,11 +31,11 @@ class Session(object):
         raise NotImplementedError
 
 
-
+# 管理chatgpt会话
 class SessionManager(object):
     def __init__(self, sessioncls, **session_args):
         if conf().get('expires_in_seconds'):
-            sessions = ExpiredDict(conf().get('expires_in_seconds'))
+            sessions = ExpiredDict(conf().get('expires_in_seconds')) # 无操作会话的过期时间
         else:
             sessions = dict()
         self.sessions = sessions

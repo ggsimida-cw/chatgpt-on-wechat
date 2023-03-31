@@ -13,36 +13,45 @@ from common.expired_dict import ExpiredDict
 import openai
 import time
 
-# OpenAI对话模型API (可用)
+# ChatGpt对话模型API (可用)
 class ChatGPTBot(Bot,OpenAIImage):
     def __init__(self):
         super().__init__()
         openai.api_key = conf().get('open_ai_api_key')
-        if conf().get('open_ai_api_base'):
+        if conf().get('open_ai_api_base'): # https://api.openai.com/v1
             openai.api_base = conf().get('open_ai_api_base')
         proxy = conf().get('proxy')
+        # 获取代理
         if proxy:
             openai.proxy = proxy
         if conf().get('rate_limit_chatgpt'):
-            self.tb4chatgpt = TokenBucket(conf().get('rate_limit_chatgpt', 20))
+            self.tb4chatgpt = TokenBucket(conf().get('rate_limit_chatgpt', 20)) # chatgpt的调用频率限制
         
         self.sessions = SessionManager(ChatGPTSession, model= conf().get("model") or "gpt-3.5-turbo")
 
     def reply(self, query, context=None):
         # acquire reply content
+        """
+        chatgpt回复信息
+        :param query:  查询的消息
+        :param context: 封装的查询一些参数
+        :return:
+        """
+        # 判断是不是文本信息
         if context.type == ContextType.TEXT:
             logger.info("[OPEN_AI] query={}".format(query))
 
             session_id = context['session_id']
             reply = None
+            # 判断是否有清除指令
             clear_memory_commands = conf().get('clear_memory_commands', ['#清除记忆'])
             if query in clear_memory_commands:
-                self.sessions.clear_session(session_id)
-                reply = Reply(ReplyType.INFO, '记忆已清除')
-            elif query == '#清除所有':
+                self.sessions.clear_session(session_id) # 清除私聊会话
+                reply = Reply(ReplyType.INFO, '记忆已清除') # 回复消息
+            elif query == '#清除所有': # 清除群聊会话
                 self.sessions.clear_all_session()
                 reply = Reply(ReplyType.INFO, '所有人记忆已清除')
-            elif query == '#更新配置':
+            elif query == '#更新配置': # 重新加载配置信息
                 load_config()
                 reply = Reply(ReplyType.INFO, '配置已更新')
             if reply:

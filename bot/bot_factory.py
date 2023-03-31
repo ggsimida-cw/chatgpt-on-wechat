@@ -6,6 +6,7 @@ from common import const
 
 def create_bot(bot_type):
     """
+    创建聊天机器人
     create a channel instance
     :param channel_type: channel type code
     :return: channel instance
