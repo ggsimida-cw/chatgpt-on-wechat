@@ -8,6 +8,7 @@ from config import conf
 class Session(object):
     def __init__(self, session_id, system_prompt=None):
         self.session_id = session_id
+        self.messages = []
         if system_prompt is None:
             self.system_prompt = conf().get("character_desc", "")
         else:
@@ -15,17 +16,23 @@ class Session(object):
 
     # 重置会话
     def reset(self):
-        raise NotImplementedError
-    # 设置机器人角色
+    # 默认：设置机器人角色，可重写该方法
+        system_item = {'role': 'system', 'content': self.system_prompt}
+        self.messages = [system_item]
+
     def set_system_prompt(self, system_prompt):
         self.system_prompt = system_prompt
         self.reset()
-    # 添加查询
+
     def add_query(self, query):
-        raise NotImplementedError
-    # 添加回复
+    # 默认：添加查询 可重写该方法
+        user_item = {'role': 'user', 'content': query}
+        self.messages.append(user_item)
+
     def add_reply(self, reply):
-        raise NotImplementedError
+        # 默认：添加查询 可重写该方法
+        assistant_item = {'role': 'assistant', 'content': reply}
+        self.messages.append(assistant_item)
     
     def discard_exceeding(self, max_tokens=None, cur_tokens=None):
         raise NotImplementedError

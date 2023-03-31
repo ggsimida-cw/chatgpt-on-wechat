@@ -14,37 +14,10 @@ chatgpt会话封装
 class ChatGPTSession(Session):
     def __init__(self, session_id, system_prompt=None, model= "gpt-3.5-turbo"):
         super().__init__(session_id, system_prompt)
-        self.messages = [] # 记录会话的消息
-        self.model = model # 使用的模型
+        self.model = model
         self.reset()
-    
-    def reset(self):
-        """
-        设置角色
-        :return:
-        """
-        system_item = {'role': 'system', 'content': self.system_prompt}
-        self.messages = [system_item]
 
-    def add_query(self, query):
-        """
-        添加查询的记录
-        :param query:
-        :return:
-        """
-        user_item = {'role': 'user', 'content': query}
-        self.messages.append(user_item)
 
-    def add_reply(self, reply):
-        """
-        添加回复的记录
-        :param reply:
-        :return:
-        """
-
-        assistant_item = {'role': 'assistant', 'content': reply}
-        self.messages.append(assistant_item)
-    
     def discard_exceeding(self, max_tokens, cur_tokens= None):
         precise = True
         try:
